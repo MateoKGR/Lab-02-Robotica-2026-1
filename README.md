@@ -7,7 +7,7 @@
 
 <h3>Curso de Robótica 2026-I</h3>
 
-<h1>Informe Laboratorio # 1</h1>
+<h1>Informe Laboratorio # 2</h1>
 
 <h2>Profesores: <br>Pedro Fabián Cárdenas Herrera <br> Manuel Felipe Carranza Montenegro<br></h2>
 
@@ -18,50 +18,78 @@
 2. Mateo Ramos Cujer [mramoscu@unal.edu.co](MateoKGR)
 
 # Indice
-1. [Diseño de la herramienta](#diseño-de-la-herramienta)
-2. [Calibración](#calibración)
-3. [Simulación](#simulación)
-4. [Salidas y entradas digitales](#salidas-y-entradas)
-5. [Implementación](#implementación)
-5. [Conclusiones y trabajo futuro](#conclusiones)
+1. [Cuadro comparativo](#cuadro-comparativo)
+2. [Descripción de las configuraciones home1 y home2](#descripcion-config)
+3. [Procedimiento detallado](#procedimiento)
+4. [Explicación completa](#explicacion)
+5. [Descripción funcionalidades RoboDK](#descripcion-funciones)
+6. [Análisis comparativo RoboDK y RobotStudio](#analisis)
+7. [Diagrama de flujo](#diagrama)
+8. [Plano de planta](#planos)
+9. [Código desarrollado](#codigo)
+10. [Videos simulación e implementación](#videos)
+    
+## Cuadro comparativo
 
-## Diseño de la herramienta
+| Característica | **Motoman MH6 (Yaskawa)** | **ABB IRB140** |
+|----------------|----------------------------|----------------|
+| **Fabricante** | Yaskawa Motoman | ABB Robotics |
+| **Grados de libertad (DOF)** | 6 | 6 |
+| **Capacidad de carga máxima (Payload)** | 6 kg | 6 kg |
+| **Alcance máximo** | 1,371 mm | 810 mm |
+| **Repetibilidad (Precisión de posicionamiento)** | ±0.08 mm | ±0.03 mm |
+| **Peso del manipulador** | 130 kg | 98 kg |
+| **Rango de movimiento (articulaciones)** | S: ±170°, L: +155°/-90°, U: +250°/-175°, R: ±200°, B: ±150°, T: ±360° | J1: ±160°, J2: +110°/-110°, J3: +230°/-60°, J4: ±200°, J5: ±115°, J6: ±400° |
+| **Velocidad máxima conjunta (aprox.)** | Hasta 230°/s (dependiendo del eje) | Hasta 320°/s (dependiendo del eje) |
+| **Montaje** | Piso, pared, techo o invertido | Piso, pared, techo o invertido |
+| **Controlador** | DX100 / DX200 | IRC5 Compact |
+| **Aplicaciones típicas** | Manipulación de materiales, soldadura por arco, paletizado, ensamblaje, corte | Ensamblaje, manipulación de materiales, atornillado, laboratorio, empaquetado |
+| **Tipo de energía** | Eléctrico (servomotores AC) | Eléctrico (servomotores AC) |
+| **Comunicación con software** | Compatible con RoboDK, MotoSim, MotoCom | Compatible con RobotStudio |
+| **Ambiente operativo** | 0–45°C, IP54 (IP67 opcional en muñeca) | 0–45°C, IP54 (IP67 en muñeca opcional) |
+| **Ventajas destacadas** | Mayor alcance, buena relación peso/rango, versátil en montaje | Alta precisión, tamaño compacto, excelente para tareas de laboratorio |
+| **Limitaciones** | Menor precisión que el IRB140 | Menor alcance y carga útil limitada a 6 kg |
+| **Año de introducción** | ~2005 | ~2004 |
 
-En primera instancia, para el desarrollo del laboratorio tuvimos que realizar el diseño de la herramienta que ibamos a utilizar.
-El diseño se realizó de acuerdo al modelo que nos fue mostrado en clase. Se desarrolló en inventor teniendo en cuenta toleracias para la rosca y el marcador que va adentro. 
 
-Tuvimos en cuenta una toleracia de aproximadamente 10mm en la punta, y añadimos un resorte en el interior de la herramienta que empujara el marcador hacia afuera.
+## Descripción de las configuraciones home1 y home2
 
-En el primer modelo que desarrollamos, la rosca no funcionaba muy bien debido a las tolerancias utilizadas por lo que fue necesario rediseñarla haciendola más resistente y con mejor ajuste.
+El manipulador Motoman MH6 cuenta con dos configuraciones iniciales principales: Home1 y Home2.
 
-A continuación una foto del modelo final desarrollado en inventor con mejor ajuste de tolerancia y una mayor resistencia.
+En la configuración Home1, los ejes del robot están extendidos en una posición más abierta, lo que facilita el inicio de operaciones y la ejecución de trayectorias, ya que el robot tiene un rango de movimiento amplio y puede acceder fácilmente a su zona de trabajo,A continuación se presentan sus respe
 
 <p align="center">
-  <img src="images/herramientafusion.png" alt="Screenshot Herramienta" width="800">
+  <img src="Images/Home1.jpg" alt="Home1" width="800">
 </p>
-<p align="center">
-   <img src="images/PiezaInventor.jpeg" alt="Screenshot Herramienta" width="800">
-</p>
-
-Planos de herramienta y planta que también se encuentran en este repositorio :
 
 <p align="center">
-   <img src="planos/planocuerpoherramienta.png" alt="Screenshot Plano Herramienta" width="800">
-</p>
-<p align="center">
-   <img src="planos/planotapaherramienta.png" alt="[Screenshot Plano Herramienta" width="800">
-</p>
-<p align="center">
-   <img src="planos/PlanoPlanta.png" alt="PlanoPlanta" width="800">
+  <img src="Images/TpHome1.jpg" alt="TpHome1" width="800">
 </p>
 
-Foto de la herramienta fisica montada en el robot :
+
+
+
+Por otro lado, la configuración Home2 corresponde a una posición más compacta o “recogida”, donde el robot mantiene sus articulaciones cercanas al cuerpo. Esta posición es más segura para el almacenamiento o reposo, ya que reduce el espacio ocupado y minimiza el riesgo de colisiones.
 
 <p align="center">
-   <img src="images/herramientarobot.jpeg" alt="herramientarobot.jpeg" width="300">
+  <img src="Images/Home2.jpg" alt="Home2" width="800">
 </p>
 
 
+<p align="center">
+  <img src="Images/TpHome2.jpg" alt="TpHome2" width="800">
+</p>
+
+En conclusión, la posición Home1 es más adecuada para iniciar tareas o calibraciones, mientras que Home2 se recomienda para finalizar el trabajo o dejar el robot en reposo.
+
+
+
+
+
+
+![Home1](images/rhome1.png)
+
+![Home2](images/rhome2.png)
 
 ## Calibración
 
