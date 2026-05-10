@@ -153,7 +153,7 @@ En términos generales, RoboDK ofrece más flexibilidad y compatibilidad, RobotS
 Se adjunta el diagrama de flujo del codigo final del script de Python 
 
 <p align="center">
-  <img src="Images/DiagramaDeFlujo.png" alt="DiagramaDeFlujo" width="400">
+  <img src="Images/DiagramaDeFlujo.png" alt="DiagramaDeFlujo" width="200">
 </p>
 
 ## Plano de planta
