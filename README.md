@@ -159,14 +159,11 @@ Se adjunta el diagrama de flujo del codigo final del script de Python
   <img src="Images/DiagramaDeFlujo.png" alt="DiagramaDeFlujo" width="200">
 </p>
 
-## Plano de Planta
-Vista posterior
+## Plano de Planta 
 
-![Plano planta vista superior](images/planoplantaposterior.jpg)
-
-Vista lateral
-
-![Plano planta vista lateral](images/planoplantalateral.jpg)
+<p align="center">
+  <img src="Images/PLANO.jpeg" alt="PLANO" width="200">
+</p>
 
 ## Código Final
 
