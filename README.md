@@ -19,7 +19,7 @@
 
 # Indice
 1. [Cuadro comparativo](#cuadro-comparativo)
-2. [Descripción de las configuraciones home1 y home2](#descripcion-config)
+2. [Descripción de las configuraciones Home 1 y Home 2](#descripcion-config)
 3. [Procedimiento detallado](#procedimiento)
 4. [Explicación completa](#explicacion)
 5. [Descripción funcionalidades RoboDK](#descripcion-funciones)
@@ -52,11 +52,18 @@
 | **Año de introducción** | ~2005 | ~2004 |
 
 
-## Descripción de las configuraciones home1 y home2
+## Descripción de las configuraciones Home 1 y Home 2
 
-El manipulador Motoman MH6 cuenta con dos configuraciones iniciales principales: Home1 y Home2.
+El manipulador Motoman MH6 cuenta con dos configuraciones iniciales principales: Home 1 y Home 2.
 
-En la configuración Home1, los ejes del robot están extendidos en una posición más abierta, lo que facilita el inicio de operaciones y la ejecución de trayectorias, ya que el robot tiene un rango de movimiento amplio y puede acceder fácilmente a su zona de trabajo,A continuación se presentan sus respe
+<p align="center">
+  <b>
+    home 1
+    
+  </b><br>
+</p>
+
+En la configuración Home1, La pantalla "Work Home Position" define la ubicación de referencia operativa del robot dentro de su entorno de trabajo. Se utiliza para establecer un punto de partida seguro en la ejecución de programas (Jobs) y permite que el controlador confirme, mediante señales de salida, que el manipulador se encuentra fuera de la zona de peligro o en posición de reposo corresponde a una posición más compacta o “recogida”, donde el robot mantiene sus articulaciones cercanas al cuerpo. Esta posición es más segura para el almacenamiento o reposo, ya que reduce el espacio ocupado y minimiza el riesgo de colisiones.
 
 <p align="center">
   <img src="Images/Home1.jpg" alt="Home1" width="800">
@@ -66,10 +73,7 @@ En la configuración Home1, los ejes del robot están extendidos en una posició
   <img src="Images/TpHome1.jpg" alt="TpHome1" width="800">
 </p>
 
-
-
-
-Por otro lado, la configuración Home2 corresponde a una posición más compacta o “recogida”, donde el robot mantiene sus articulaciones cercanas al cuerpo. Esta posición es más segura para el almacenamiento o reposo, ya que reduce el espacio ocupado y minimiza el riesgo de colisiones.
+Por otro lado, en la configuración Home2 los ejes del robot están extendidos en una posición más abierta, lo que facilita el inicio de operaciones y la ejecución de trayectorias, ya que el robot tiene un rango de movimiento amplio y puede acceder fácilmente a su zona de trabajo, Se utiliza la mayoria de las veces para fines de mantenimiento y sincronización mecánica. Representa la posición absoluta de calibración del manipulador. La columna 'Difference' es vital, ya que permite al técnico verificar si existe una desviación entre la posición electrónica de los encoders y la posición mecánica real de los ejes del robot ademas de contar con 6 muescas fisicas que coinciden con su posición en home 2 para temas de calibración y que los encondes se encuentren en cero.
 
 <p align="center">
   <img src="Images/Home2.jpg" alt="Home2" width="800">
