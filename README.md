@@ -162,7 +162,7 @@ Se adjunta el diagrama de flujo del codigo final del script de Python
 ## Plano de Planta 
 
 <p align="center">
-  <img src="Images/PLANO.jpeg" alt="PLANO" width="200">
+  <img src="Images/PLANO.jpeg" alt="PLANO" width="800">
 </p>
 
 ## Código Final
