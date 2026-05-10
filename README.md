@@ -392,11 +392,11 @@ Hacer click en la imagen para ver el video
 
 <p align="center">
   <a href="https://drive.google.com/file/d/1ij6B6W8OuVKBep31pgdqVkJPGnhWZAq1/view?usp=sharing">
-    <img src="images/ResultadoFinal.png" alt="Ver video de Simulación" width="600">
+    <img src="Images/ResultadoFinal.png" alt="Ver video de Simulación" width="600">
   </a>
 </p>
 
-##Implementación
+## Implementación
 
 Por último se presenta el video final de la implementación completa :
 
