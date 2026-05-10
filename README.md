@@ -19,10 +19,10 @@
 
 # Indice
 1. [Cuadro comparativo](#cuadro-comparativo)
-2. [Descripción de las configuraciones Home 1 y Home 2](#descripcion-config)
-3. [Procedimiento detallado](#procedimiento)
-4. [Explicación completa](#explicacion)
-5. [Descripción funcionalidades RoboDK](#descripcion-funciones)
+2. [Descripción de las configuraciones Home 1 y Home 2](#Descripción-de-las-configuraciones-Home-1-y-Home-2)
+3. [Procedimiento detallado](#Procedimiento-detallado)
+4. [Descripción funcionalidades RoboDK](#Descripción-funcionalidade-RoboDK)
+5. [Explicación completa](#explicacion)
 6. [Análisis comparativo RoboDK y RobotStudio](#analisis)
 7. [Diagrama de flujo](#diagrama)
 8. [Plano de planta](#planos)
@@ -58,12 +58,11 @@ El manipulador Motoman MH6 cuenta con dos configuraciones iniciales principales:
 
 <p align="center">
   <b>
-    home 1
-    
+    Home 1
   </b><br>
 </p>
 
-En la configuración Home1, La pantalla "Work Home Position" define la ubicación de referencia operativa del robot dentro de su entorno de trabajo. Se utiliza para establecer un punto de partida seguro en la ejecución de programas (Jobs) y permite que el controlador confirme, mediante señales de salida, que el manipulador se encuentra fuera de la zona de peligro o en posición de reposo corresponde a una posición más compacta o “recogida”, donde el robot mantiene sus articulaciones cercanas al cuerpo. Esta posición es más segura para el almacenamiento o reposo, ya que reduce el espacio ocupado y minimiza el riesgo de colisiones.
+En la configuración Home 1, La pantalla "Work Home Position" define la ubicación de referencia operativa del robot dentro de su entorno de trabajo. Se utiliza para establecer un punto de partida seguro en la ejecución de programas (Jobs) y permite que el controlador confirme, mediante señales de salida, que el manipulador se encuentra fuera de la zona de peligro o en posición de reposo corresponde a una posición más compacta o “recogida”, donde el robot mantiene sus articulaciones cercanas al cuerpo. Esta posición es más segura para el almacenamiento o reposo, ya que reduce el espacio ocupado y minimiza el riesgo de colisiones.
 
 <p align="center">
   <img src="Images/Home1.jpg" alt="Home1" width="800">
@@ -73,27 +72,77 @@ En la configuración Home1, La pantalla "Work Home Position" define la ubicació
   <img src="Images/TpHome1.jpg" alt="TpHome1" width="800">
 </p>
 
-Por otro lado, en la configuración Home2 los ejes del robot están extendidos en una posición más abierta, lo que facilita el inicio de operaciones y la ejecución de trayectorias, ya que el robot tiene un rango de movimiento amplio y puede acceder fácilmente a su zona de trabajo, Se utiliza la mayoria de las veces para fines de mantenimiento y sincronización mecánica. Representa la posición absoluta de calibración del manipulador. La columna 'Difference' es vital, ya que permite al técnico verificar si existe una desviación entre la posición electrónica de los encoders y la posición mecánica real de los ejes del robot ademas de contar con 6 muescas fisicas que coinciden con su posición en home 2 para temas de calibración y que los encondes se encuentren en cero.
+<p align="center">
+  <b>
+    Home 2
+  </b><br>
+</p>
+
+Por otro lado, en la configuración Home 2 los ejes del robot están extendidos en una posición más abierta, lo que facilita el inicio de operaciones y la ejecución de trayectorias, ya que el robot tiene un rango de movimiento amplio y puede acceder fácilmente a su zona de trabajo, Se utiliza la mayoria de las veces para fines de mantenimiento y sincronización mecánica. Representa la posición absoluta de calibración del manipulador. La columna 'Difference' es vital, ya que permite al técnico verificar si existe una desviación entre la posición electrónica de los encoders y la posición mecánica real de los ejes del robot ademas de contar con 6 muescas fisicas que coinciden con su posición en home 2 para temas de calibración y que los encondes se encuentren en cero.
 
 <p align="center">
   <img src="Images/Home2.jpg" alt="Home2" width="800">
 </p>
 
-
 <p align="center">
   <img src="Images/TpHome2.jpg" alt="TpHome2" width="800">
 </p>
 
-En conclusión, la posición Home1 es más adecuada para iniciar tareas o calibraciones, mientras que Home2 se recomienda para finalizar el trabajo o dejar el robot en reposo.
+En conclusión, la posición Home 2 es más adecuada para iniciar tareas, mientras que Home 1 se recomienda para finalizar el trabajo,dejar el robot en reposo o calibrarlo.
+
+## Procedimiento detallado
+
+Antes de realizar cualquier movimiento, es importante tener en cuenta los siguientes pasos de seguridad y configuración:
+
+Primero, se debe **desactivar el botón de seguridad o parada de emergencia**. Luego, es necesario **activar los servomotores** presionando el botón **“SERVO ON READY”**.  
+Además, el **teach pendant** debe estar en modo **“TEACH”**, el cual permite realizar trayectorias manuales.
+Posteriormente, se debe presionar el botón **“COORD”**, que permite alternar entre el modo de movimiento **articular** o **lineal**.  
+Si se selecciona el modo **articular**, en la parte superior de la pantalla aparecerá un símbolo de un robot.  
+En cambio, si se selecciona el modo **lineal**, se mostrará un sistema de coordenadas.
+
+Una vez definido el modo de movimiento, se pueden realizar desplazamientos utilizando los botones correspondientes a los ejes **X**, **Y** y **Z**.  
+Es importante tener en cuenta que las **articulaciones 7 y 8** son independientes de estas formas de movimiento del robot.
+## Explicación completa
+El manipulador Motoman MH6 cuenta con tres niveles de velocidad para los movimientos manuales: Slow, Fast y High Speed. Estos niveles determinan la rapidez con la que se desplazan las articulaciones o el efector final cuando se controla el robot desde el teach pendant.
+
+El operador puede cambiar entre los tres modos directamente desde el panel de control, usando el botón correspondiente al nivel deseado. Cada vez que se selecciona un modo, el cambio se aplica de inmediato y se refleja en la pantalla del controlador, donde aparece indicado el nivel de velocidad activo.
+
+En general, el modo Slow se utiliza para realizar movimientos precisos o cercanos a zonas de trabajo sensibles; Fast es útil para desplazamientos intermedios o ajustes rápidos; y High Speed se reserva para movimientos amplios o pruebas en zonas despejadas.
+
+Este sistema de tres velocidades facilita el control del robot de forma segura y práctica, permitiendo al operador ajustar la rapidez según la tarea sin necesidad de configuraciones adicionales.
+
+<p align="center">
+  <img src="Images/velocidades.jpg" alt="velocidades" width="800">
+</p>
+
+
+## Descripción funcionalidades RoboDK
+RoboDK es una plataforma de simulación y programación *offline* de robots industriales que permite desarrollar, probar y optimizar trayectorias sin necesidad de utilizar el robot físico.  
+
+### Funcionalidades Principales
+
+- **Simulación de trayectorias:** permite crear y visualizar movimientos del robot en un entorno 3D, evaluando posibles colisiones y alcances.  
+- **Programación offline:** se pueden generar programas compatibles con múltiples marcas de robots (como KUKA, ABB, Fanuc o UR) directamente desde la interfaz.  
+- **Integración CAD/CAM:** facilita importar modelos CAD para realizar trayectorias de mecanizado, soldadura o pulido.  
+- **Control y comunicación:** soporta conexión en tiempo real con el robot físico mediante protocolos estándar.  
+- **Personalización mediante scripts:** admite el uso de Python para automatizar rutinas y definir trayectorias paramétricas.  
+
+RoboDK puede comunicarse con el manipulador de dos maneras:
+
+1. **Programación offline:**  
+   En este modo, RoboDK genera el código del programa compatible con el lenguaje del fabricante del robot (por ejemplo: KUKA, ABB, Fanuc, UR, Mitsubishi, entre otros).  
+   Este archivo se transfiere manualmente al controlador del robot, donde se ejecuta sin necesidad de mantener una conexión activa con el software.
+
+2. **Control online (en tiempo real):**  
+   RoboDK puede establecer una conexión directa con el robot físico mediante una red Ethernet,WIFI o protocolo TCP/IP.  
+   A través de esta comunicación, el software envía las instrucciones al controlador para mover el robot en tiempo real.  
+   Para ello, utiliza **drivers específicos** para cada marca de robot, permitiendo enviar comandos, actualizar posiciones y ejecutar programas desde la interfaz de RoboDK o mediante scripts en Python.
+
+En ambos casos, RoboDK actúa como un intermediario entre el entorno virtual de simulación y el controlador físico del robot, garantizando que los movimientos sean precisos, seguros y reproducibles.
 
 
 
 
-
-
-![Home1](images/rhome1.png)
-
-![Home2](images/rhome2.png)
 
 ## Calibración
 
