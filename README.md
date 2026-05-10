@@ -21,13 +21,14 @@
 1. [Cuadro comparativo](#cuadro-comparativo)
 2. [Descripción de las configuraciones Home 1 y Home 2](#Descripción-de-las-configuraciones-Home-1-y-Home-2)
 3. [Procedimiento detallado](#Procedimiento-detallado)
-4. [Descripción funcionalidades RoboDK](#Descripción-funcionalidade-RoboDK)
-5. [Explicación completa](#explicacion)
-6. [Análisis comparativo RoboDK y RobotStudio](#analisis)
-7. [Diagrama de flujo](#diagrama)
-8. [Plano de planta](#planos)
-9. [Código desarrollado](#codigo)
-10. [Videos simulación e implementación](#videos)
+4. [Procedimiento detallado](#Explicación-completa)
+5. [Descripción funcionalidades RoboDK](#Descripción-funcionalidade-RoboDK)
+6. [Explicación completa](#explicacion)
+7. [Análisis comparativo RoboDK y RobotStudio](#analisis)
+8. [Diagrama de flujo](#diagrama)
+9. [Plano de planta](#planos)
+10. [Código desarrollado](#codigo)
+11. [Videos simulación e implementación](#videos)
     
 ## Cuadro comparativo
 
@@ -140,182 +141,279 @@ RoboDK puede comunicarse con el manipulador de dos maneras:
 
 En ambos casos, RoboDK actúa como un intermediario entre el entorno virtual de simulación y el controlador físico del robot, garantizando que los movimientos sean precisos, seguros y reproducibles.
 
+## Análisis comparativo RoboDK y RobotStudio
+
+RoboDK se caracteriza por ser un software multimarca, compatible con una gran cantidad de robots industriales como Yaskawa,ABB, FANUC, Universal Robots, entre otros. Esto hace que sea muy versátil, especialmente en entornos académicos o de investigación donde se utilizan equipos de distintos fabricantes. Además, permite generar y editar programas en varios lenguajes (como Python, RAPID o Motoman INFORM) y cuenta con una interfaz bastante intuitiva y ligera. Su conexión con el robot físico se realiza a través de drivers o protocolos TCP/IP específicos de cada marca, como el DX100 o DX200 en el caso del Motoman MH6.
+
+Por otro lado, RobotStudio es una herramienta desarrollada por ABB exclusivamente para sus propios robots. Está enfocada en la simulación, programación y prueba de rutinas en lenguaje RAPID. Su entorno es más técnico, es más ideal para entornos industriales donde se necesita validar trayectorias, detectar colisiones y optimizar ciclos antes de llevarlos a la planta.
+
+En términos generales, RoboDK ofrece más flexibilidad y compatibilidad, RobotStudio proporciona mas realismo y precisió pero solo para robots ABB. Para trabajos educativos y proyectos con diferentes marcas, RoboDK resulta más práctico; en cambio, para validaciones industriales específicas con robots ABB, RobotStudio es mejor.
+
+## Diagrama de flujo Codigo de trabajo
+Se adjunta el diagrama de flujo del codigo final del script de Python 
+
+![Diagrama de flujo](images/df1.png)
+
+## Plano de planta
+Vista posterior
+
+![Plano planta vista superior](images/planoplantaposterior.jpg)
+
+Vista lateral
+
+![Plano planta vista lateral](images/planoplantalateral.jpg)
+
+## Código Final
+
+Este programa en Python utiliza la API de RoboDK para controlar el robot industrial manipulador Motoman MH6. Establece la conexión con el robot, configura su marco de trabajo y genera movimientos que dibujan una figura con cordenadas polares en forma semejante a un corazón ademas de escribir el nombre de los 2 integrantes del grupo Juan Andrés y Mateo. Combina cálculos matemáticos con la función de cordenadas polares con con comandos de movimientos dados por la libreria matplotlib para ejecutar trayectorias precisas dentro del entorno de simulación que dibujen la figura y el texto.
+
+```python
+from robodk.robolink import *    # API para comunicarte con RoboDK
+from robodk.robomath import *    # Funciones matemáticas
+import math
+from matplotlib.textpath import TextPath
+from matplotlib.path import Path
+
+#------------------------------------------------
+# 1) Conexión a RoboDK e inicialización
+#------------------------------------------------
+RDK = Robolink()
+
+# Elegir un robot (si hay varios, aparece un popup)
+robot = RDK.ItemUserPick("Selecciona un robot", ITEM_TYPE_ROBOT)
+if not robot.Valid():
+    raise Exception("No se ha seleccionado un robot válido.")
+
+# Conectar al robot físico
+#if not robot.Connect():
+    #raise Exception("No se pudo conectar al robot. Verifica que esté en modo remoto y que la configuración sea correcta.")
+
+# Confirmar conexión
+#if not robot.ConnectedState():
+   # raise Exception("El robot no está conectado correctamente. Revisa la conexión.")
+
+#print("Robot conectado correctamente.")
+
+#------------------------------------------------
+# 2) Cargar el Frame (ya existente) donde quieres dibujar
+#    Ajusta el nombre si tu Frame se llama diferente
+#------------------------------------------------
+frame_name = "Frame_from_Target1"
+frame = RDK.Item(frame_name, ITEM_TYPE_FRAME)
+if not frame.Valid():
+    raise Exception(f'No se encontró el Frame "{frame_name}" en la estación.')
+
+# Asignamos este frame al robot
+robot.setPoseFrame(frame)
+# Usamos la herramienta activa
+robot.setPoseTool(robot.PoseTool())
+
+# Ajustes de velocidad y blending
+robot.setSpeed(300)   # mm/s - Ajusta según necesites
+robot.setRounding(5)  # blending (radio de curvatura)
+
+#------------------------------------------------
+# 3) Parámetros de la figura (rosa polar)
+#------------------------------------------------
+num_points = 720       # Cuántos puntos muestreamos (mayor = más suave)
+A = 70               # Amplitud (Tamaño Del corazon)
+z_surface = 0          # Z=0 en el plano del frame
+z_safe = -50            # Altura segura para aproximarse y salir
+
+#------------------------------------------------
+# 4) Movimiento al centro en altura segura
+#------------------------------------------------
+# 4) Movimiento a Home
+
+home_target = RDK.Item("Target_Home", ITEM_TYPE_TARGET)
+robot.MoveJ(home_target)
+# El centro inicio del corazon corresponde a x=500, y=se calcula con el punto inicial del corazon
+theta = 0
+r = A * ((math.sin(theta) * (math.sqrt(abs(math.cos(theta))) / (math.sin(theta) + 1.4))) - 2 * math.sin(theta) + 2)
+
+robot.MoveJ(transl(500,-r , z_surface + z_safe))
+
+# Bajamos a la "superficie" (Z=0)
+robot.MoveL(transl(500, -r, z_surface))
+
+#------------------------------------------------
+# 5) Dibujar El Corazon
+#    r = A * ((math.sin(theta) * (math.sqrt(abs(math.cos(theta))) / (math.sin(theta) + 1.4))) - 2 * math.sin(theta) + 2)
+#    xbase = r * math.cos(theta)
+#    ybase = r * math.sin(theta)
+#    x = ybase+300
+#    y = -xbase
+#------------------------------------------------
+# Recorremos theta de 0 a 2*pi (una vuelta completa)
+
+full_turn = 2*math.pi
+
+
+for i in range(num_points+1):
+    print(i)
+    # Fracción entre 0 y 1
+    t = i / num_points
+    # Ángulo actual
+    theta = full_turn * t
+
+    # Calculamos r
+    r = A * ((math.sin(theta) * (math.sqrt(abs(math.cos(theta))) / (math.sin(theta) + 1.4))) - 2 * math.sin(theta) + 2)
+
+    # Convertimos a coordenadas Cartesianas X, Y
+    xbase = r * math.cos(theta)
+    ybase = r * math.sin(theta)
+
+    x = ybase+500
+    y = -xbase
+
+    # Movemos linealmente (MoveL) en el plano del Frame
+    robot.MoveL(transl(x, y, z_surface))
+
+# Al terminar, subimos de nuevo para no chocar
+robot.MoveL(transl(x, y, z_surface + z_safe))
+
+#Nombres de los integrantes (50) de altura
 
 
 
+text = "Juan Andrés"
+scale = 1.5             # escalado (para probar tamaños)
+letter_spacing = 50       # separación entre letras en X (en el frame del objeto es y positivo)
+text_offset_x = -300       # donde empieza el texto en X (en el frame del objeto es y positivo)
+text_offset_y = 90 # debajo del corazon en Y (en el frame del objeto es x positivo)
 
-## Calibración
+x_cursor = text_offset_x  # cursor que avanza en X por cada letra
 
-El proceso de calibración del robot con la herramienta nos tomó varias sesiones de práctica libre, inicialmente, nos daba un error de aproximadamente 15 o 20 milimetros, lo cual es demasiado teniendo en cuenta la toleracia de nuestra herramienta, sin embargo, en la tercera sesión ya con la práctica adquirida logramos tener un error de 7.9mm aproximadamente, lo cual es acorde a nuestra toleracia física de 10mm de nuestra herramienta mencionada en la sección anterior. 
+for char in text:
+    tp = TextPath((0, 0), char, size=50)
+    verts = tp.vertices * scale
+    codes = tp.codes
 
-A continuación la foto de la herramienta con nombre "merequetengue_v2" en la pantalla del Flex Pendant :
+    last_x, last_y = None, None
 
-<p align="center">
-  <img src="images/merequetengue.jpeg" alt="merequetengue" width="800">
-</p>
+    for (vx, vy), code in zip(verts, codes):
+        x_pos = x_cursor + vx
+        y_pos = text_offset_y + vy
 
-Durante la calibración del workobject, tuvimos un pequeño percanse con la herramienta, pues nos quedó mal la calibración con un error demasiado grande y rompimos la herramienta. A continuación la prueba de la herramienta rota :
+        if code == Path.MOVETO:
+            robot.MoveL(transl(y_pos, x_pos, z_safe))
+            robot.MoveL(transl(y_pos, x_pos, z_surface))
+        elif code in (Path.LINETO, Path.CURVE3, Path.CURVE4):
+            robot.MoveL(transl(y_pos, x_pos, z_surface))
 
-<p align="center">
-  <img src="images/herramientarota.png" alt="[Herramienta rota" width="300">
-</p>
+        # Actualiza última posición
+        last_x, last_y = x_pos, y_pos
+
+    # Al terminar la letra, solo levanta en el mismo sitio
+    if last_x is not None and last_y is not None:
+        robot.MoveL(transl(last_y, last_x, z_safe))
+
+    # Avanza cursor para la siguiente letra
+    x_cursor += letter_spacing
+# Y
+text2 = "Y"
+x_cursor = -50     # reinicia el cursor horizontal
+text_offset_y -= 70  # baja el texto
+
+for char in text2:
+    tp = TextPath((0, 0), char, size=50)
+    verts = tp.vertices * scale
+    codes = tp.codes
+
+    last_x, last_y = None, None
+
+    for (vx, vy), code in zip(verts, codes):
+        x_pos = x_cursor + vx
+        y_pos = text_offset_y + vy
+
+        if code == Path.MOVETO:
+            robot.MoveL(transl(y_pos, x_pos, z_safe))
+            robot.MoveL(transl(y_pos, x_pos, z_surface))
+        elif code in (Path.LINETO, Path.CURVE3, Path.CURVE4):
+            robot.MoveL(transl(y_pos, x_pos, z_surface))
+
+        last_x, last_y = x_pos, y_pos
+
+    # Levantar pluma al terminar la letra
+    if last_x is not None and last_y is not None:
+        robot.MoveL(transl(last_y, last_x, z_safe))
+
+    # Avanzar cursor para la siguiente letra
+    x_cursor += letter_spacing
+
+# segundo nombre
+text2 = "Mateo"
+x_cursor = -150      # reinicia el cursor horizontal
+text_offset_y -= 70  # baja el texto
+
+for char in text2:
+    tp = TextPath((0, 0), char, size=50)
+    verts = tp.vertices * scale
+    codes = tp.codes
+
+    last_x, last_y = None, None
+
+    for (vx, vy), code in zip(verts, codes):
+        x_pos = x_cursor + vx
+        y_pos = text_offset_y + vy
+
+        if code == Path.MOVETO:
+            robot.MoveL(transl(y_pos, x_pos, z_safe))
+            robot.MoveL(transl(y_pos, x_pos, z_surface))
+        elif code in (Path.LINETO, Path.CURVE3, Path.CURVE4):
+            robot.MoveL(transl(y_pos, x_pos, z_surface))
+
+        last_x, last_y = x_pos, y_pos
+
+    # Levantar pluma al terminar la letra
+    if last_x is not None and last_y is not None:
+        robot.MoveL(transl(last_y, last_x, z_safe))
+
+    # Avanzar cursor para la siguiente letra
+    x_cursor += letter_spacing
+
+robot.MoveJ(home_target)
+
+print(f"¡Figura De Corazon completada en el frame '{frame_name}'!")
+```
 
 ## Simulación
 
-Respecto al manejo de Robot Studio, tuvimos que comenzar por modelar para despues importar los modelos CAD tanto de la herramienta (es decir nuestro tool) como del Workobject (el pastel) en inventor, utilimos una caja de madera de 20 cm de ancho, 20cm de largo y 9 cm de alto con un cristal en donde se iban grabar los nombres y logo con el marcador, Se muestra a continuacion nuestro workobject en fisico : 
+Por último se presenta el video final de la simulación completa en RoboDK  :
 
-<p align="center">
-  <img src="images/Caja_Fisica.jpeg" alt="Caja_Fisica" width="300">  
-</p>
-
-Es importante mencionar que diseñamos nuestros nombres y el logo con curvas relativamente sencillas tambien en el sofware Inventor para despues recrearlas en Robot Studio , Nos guiamos por el primer nombre de cada integrando del grupo y de logo un personaje principal de un videojuego famoso (Sans) como vemos a continuación:
-
-<p align="center">
-  <img src="images/DiseñoLogoYNombres.jpeg" alt="DiseñoLogoYNombres" width="800">
-</p>
-
-Dando Como Resultado final el siguiente WorkObject Listo para exportar a RobotStudio en formato .sat sugerido por el profesor para facilitar su manipulación :
-
-<p align="center">
-  <img src="images/ResultadoFinal.jpeg" alt="ResultadoFinal" width="800">
-</p>
-
-Ya en el RobotEstudio se observa de la siguiente manera tanto la herramienta como nuestro WorkObject ademas de importar una banda para hacer la simulación mas coincidente con la realidad :
-
-<p align="center">
-  <img src="images/Herramienta.jpeg" alt="Herramienta" width="400">
-</p>
-
-<p align="center">
-  <img src="images/workobject.png" alt="Work Object" width="800">
-</p>
-
-<p align="center">
-  <img src="images/Banda.jpeg" alt="Banda" width="800">
-</p>
-
-Configuramos nuestro tool dandole la orientacion al eje coordenado y acomplandolo en nuestro robot. Para el Work Object se ubico en la posicion dada en la vida real en sus cordenadas cortesianas y sus angulos respectivos al crearlo con el robot fisico para que tanto la simulación como la realidad estuvieran entrelazadas y no tener problemas de ubicación en el espacio, se presentaron algunos problemas ya que la banda nop esta del todo recta y se presentan inclinaciones que no son muy ligeras pero que de igual forma son importantes para ubicarla en el espacio en la posición real,Se muestra acontinuacion la ubicación de todos los objetos en el espacio de simulacion :
-
-<p align="center">
-  <img src="images/UbicaciónTodos.jpeg" alt="UbicaciónTodos" width="800">
-</p>
-
-Una vez configurada la herramienta y el posicionado el workobject en el lugar que debería estar según el espacio de trabajo en el laboratorio en la banda transportadora, se comenazaron a crear los Targets, es decir los puntos que debían guiar al robot. Se crean  ubicandolos con las herramientas del sofware de manera más fácil,Se crea el Target_Home y un Target para la posición de mantenimiento Ademas para acercarse a la caja se creo un punto intermedio ya que el WorkObject tiene una forma irregular entre el tope de la madera y el vidrio que podria romper la herramienta asi que se hace crea un punto de aproximacion para evitar esto, al igual que se sube el marcador en cada cambio de letra para hacer notar la separación de esta , se tuvieron dificultades en el tema del logo ya que contaba con muchas curvas, igualmente el desarrollo fue exitoso creando 216 Targets que se presenta en en la siguiente imagen.
-
-<p align="center">
-  <img src="images/paths.png" alt="Targets" width="800">
-</p>
-
-Configurados los Targets, se crearon los Paths entre los Targets, es decir, los caminos que debía seguir el robot para hacer el dibujo. Aquí es importante resaltar la importancia de crear bien los Targets, pues se debía alzar el brazo cada vez que se deseaba alcanzar una posición diferente dentro del workobject, de otra manera se pintarían lineas indeseadas. También se tuvo que utilizar diferentes comandos para hacer las lineas curvas o circulos, la instrucción MoveJ realiza desplazamientos rápidos por trayectorias curvas entre puntos mediante el movimiento coordinado de las articulaciones; MoveL mueve la herramienta en línea recta garantizando precisión en trayectorias como líneas o figuras; y MoveC permite describir trayectorias circulares o arcos suaves entre dos posiciones intermedias, Se creo un path diferente para cada letra y para cada detalle del logo para simplificar la solución de errores ademas se creo un borde en el pastel para asemejar el dibujo a un cuadro, despues se comentaria esta linea ya que seria muy riesgoso para la herramienta debido a su cercania con difernetes topes del WorkObject, a continuacón se presentas los diferentes paths con  las tres posiciones, home, mantenimiento y escritura :
-
-<p align="center">
-  <img src="images/planoplanta.png" alt="Targets & Paths creados" width="800">
-</p>
-
-En la imagen se observan todos los sistemas coordenados (orientados en la misma dirección) de los Targets creados junto con los Paths que debía seguir el robot (las líneas amarillas). 
-
-Una vez hechos los Paths y los Targets se sincronizó la estación con el código para poder ajustar el código de rapid de manera que la simulación sirviera. Importante tener en cuenta que estuvieran creados tanto los Target como los Paths en el código. (El código se encuentra adjunto en este repositorio en la ruta code\rapid\lab01_main.mod)
-
-A continuación el diagrama de flujo del código final.
-
-<p align="center">
-  <img src="images/DiagramaDeFlujo.png" alt="Diagrama de flujo" width="800">
-</p>
-
-A continuación Se puedes Descargas y/0 ver simulación en Robot Studio :
-
-[Descargar video de simulación](videos/videosimulacion.mp4)
-
-Hacer click en la imagen para ver el video
+Hacer click en la imagen para ver el video 
 
 <p align="center">
   <b>
     Video de Simulación Final
-    
+      
   </b><br>
 </p>
 
 <p align="center">
-  <a href="https://drive.google.com/file/d/1kXaQzWbMT2wHPFSJX9RmqOiA7s4YEELO/view?usp=sharing">
-    <img src="images/videosimu.png" alt="Ver video de implementación" width="600">
+  <a href="https://drive.google.com/file/d/1ij6B6W8OuVKBep31pgdqVkJPGnhWZAq1/view?usp=sharing">
+    <img src="images/ResultadoFinal.png" alt="Ver video de Simulación" width="600">
   </a>
 </p>
 
+##Implementación
 
-
-## Salidas y entradas digitales
-
-Existen diferencias clave entre la simulación y la vida real. En la vida real, la entrada digital acciona directamente un circuito de control que activa el motor de la banda transportadora. En cambio, en la simulación, mediante el uso de smart components, se genera el movimiento de la caja, lo que nos da la sensación de que esta se está desplazando.
-
-Por otro lado, es evidente que en la vida real las entradas están físicamente conectadas al controlador mediante pulsadores, mientras que en la simulación debemos crear dichas entradas y salidas de forma virtual. Además, es a través del I/O Simulator que se obtienen y gestionan esas señales.
-
-Para la simulación se realizaron Dos SmartComponents para simular como la banda se atrasa y como se adelanta estas como la banda real dependian de 2 condiciones en sus entradas que era el Forward y el backward de la banda , en la vida real para hacer avanzar la banda se necesitaba el Forward  en 1 y el Backward en 0 , mientras que para hacerla atrasar se necesitaban los dos en 1 esto se logro con un movimiento lineal de los Dos SmartsComponents en direcciones diferentes con una velocidad de 160 m/s , cada uno era ativado con compuestas ands en donde en el primer caso era simp,emnete las 2 entradas sin modificar y en el otro caso se utilizo una compuerta not para negar la entrada del bakcWard , Acontinuacion se presentan todas las configuraciones Usadas : 
-
-Dos SmartsComponents : 
-
-<p align="center">
-  <img src="images/Smart.jpeg" alt="Smart" width="250">
-</p>
-
-Entrelazamiento De señales :
-
-<p align="center">
-  <img src="images/Entrelazamiento.jpeg" alt="Entrelazamiento" width="800">
-</p>
-
-Forward :
-
-<p align="center">
-  <img src="images/PropiedadesF.jpeg" alt="PropiedadesF" width="250">
-</p>
-
-<p align="center">
-  <img src="images/Ford.jpeg" alt="Ford" width="800">
-</p>
-
-BackWard :
-
-<p align="center">
-  <img src="images/PropiedadesB.jpeg" alt="PropiedadesB" width="250">
-</p>
-
-<p align="center">
-  <img src="images/Back.jpeg" alt="Back" width="800">
-</p>
-
-## Implementación
-
-Respecto a la implementación, tuvimos que comunicarnos con el controlador a través de un cable UTP para poder utilizar nuestra rutina, en principio, el reto fue lograr calibrar en el espacio de trabajo el WorkObject para que el robot fuera preciso en llegar y hacer la figura en nuestro WorkObject de la vida real, el cual, como el modelo CAD que hicimos, era una caja de 20x20x5cm.
-Después de iterar varias veces, logramos ajustar con precision el robot con el WorkObject y ejecutamos la rutina teneindo en cuenta las salidas y entradas digitales también. 
-
-Por último se presenta el video final de la implementación completa para ver y descargar :
-
-[Descargar video de implementación](videos/demostracionfinal.mp4)
+Por último se presenta el video final de la implementación completa :
 
 Hacer click en la imagen para ver el video 
 
 <p align="center">
   <b>
     Video de implementación Final
-    
+      
   </b><br>
 </p>
 
 <p align="center">
-  <a href="https://drive.google.com/file/d/1edeZfZN7N_7Qt_5dm3t9YpQIyT7DY9qp/view?usp=sharing">
-    <img src="images/miniaturavideofinal.png" alt="Ver video de implementación" width="600">
+  <a href="https://drive.google.com/file/d/1xw-iRde50_FzMe3LMQadTo-4XnVnvb4v/view?usp=sharing"> 
+    <img src="Images/MontajeMiniatura.png" alt="Ver video de implementación" width="600">
   </a>
 </p>
-
-
-
-A continuación se puede ver en mejor detalle el dibujo final Obtenido : 
-
-<p align="center">
-  <img src="images/dibujofinal.png" alt="dibujofinal" width="300">
-</p>
-
-
 
 ## Conclusiones y trabajo futuro
 
