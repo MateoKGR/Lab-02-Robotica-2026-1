@@ -18,19 +18,20 @@
 2. Mateo Ramos Cujer [mramoscu@unal.edu.co](MateoKGR)
 
 # Indice
-1. [Cuadro comparativo](#cuadro-comparativo)
+1. [Cuadro comparativo](#Cuadro-Comparativo)
 2. [Descripción de las configuraciones Home 1 y Home 2](#Descripción-de-las-configuraciones-Home-1-y-Home-2)
-3. [Procedimiento detallado](#Procedimiento-detallado)
-4. [Procedimiento detallado](#Explicación-completa)
-5. [Descripción funcionalidades RoboDK](#Descripción-funcionalidade-RoboDK)
-6. [Explicación completa](#explicacion)
-7. [Análisis comparativo RoboDK y RobotStudio](#analisis)
-8. [Diagrama de flujo](#diagrama)
-9. [Plano de planta](#planos)
-10. [Código desarrollado](#codigo)
-11. [Videos simulación e implementación](#videos)
+3. [Procedimiento detallado](#Procedimiento-Detallado)
+4. [Explicación Completa](#Explicación-Completa)
+5. [Descripción funcionalidades RoboDK](#Descripción-funcionalidades-RoboDK)
+6. [Análisis comparativo RoboDK y RobotStudio](#Análisis-comparativo-RoboDK-y-RobotStudio)
+7. [Diagrama de flujo Codigo de trabajoo](#Diagrama-de-flujo-Codigo-de-trabajo)
+8. [Plano de Planta](#Plano-de-Planta)
+9. [Código Final](#Código-Final)
+10. [Simulación](#Simulación)
+11. [Implementación](#Implementación)
+12. [Videos simulación e implementación](#Conclusiones-y-trabajo-futuro)
     
-## Cuadro comparativo
+## Cuadro Comparativo
 
 | Característica | **Motoman MH6 (Yaskawa)** | **ABB IRB140** |
 |----------------|----------------------------|----------------|
@@ -91,7 +92,7 @@ Por otro lado, en la configuración Home 2 los ejes del robot están extendidos 
 
 En conclusión, la posición Home 2 es más adecuada para iniciar tareas, mientras que Home 1 se recomienda para finalizar el trabajo,dejar el robot en reposo o calibrarlo.
 
-## Procedimiento detallado
+## Procedimiento Detallado
 
 Antes de realizar cualquier movimiento, es importante tener en cuenta los siguientes pasos de seguridad y configuración:
 
@@ -103,7 +104,9 @@ En cambio, si se selecciona el modo **lineal**, se mostrará un sistema de coord
 
 Una vez definido el modo de movimiento, se pueden realizar desplazamientos utilizando los botones correspondientes a los ejes **X**, **Y** y **Z**.  
 Es importante tener en cuenta que las **articulaciones 7 y 8** son independientes de estas formas de movimiento del robot.
-## Explicación completa
+
+## Explicación Completa
+
 El manipulador Motoman MH6 cuenta con tres niveles de velocidad para los movimientos manuales: Slow, Fast y High Speed. Estos niveles determinan la rapidez con la que se desplazan las articulaciones o el efector final cuando se controla el robot desde el teach pendant.
 
 El operador puede cambiar entre los tres modos directamente desde el panel de control, usando el botón correspondiente al nivel deseado. Cada vez que se selecciona un modo, el cambio se aplica de inmediato y se refleja en la pantalla del controlador, donde aparece indicado el nivel de velocidad activo.
@@ -156,7 +159,7 @@ Se adjunta el diagrama de flujo del codigo final del script de Python
   <img src="Images/DiagramaDeFlujo.png" alt="DiagramaDeFlujo" width="200">
 </p>
 
-## Plano de planta
+## Plano de Planta
 Vista posterior
 
 ![Plano planta vista superior](images/planoplantaposterior.jpg)
