@@ -29,7 +29,7 @@
 9. [Código Final](#Código-Final)
 10. [Simulación](#Simulación)
 11. [Implementación](#Implementación)
-12. [Videos simulación e implementación](#Conclusiones-y-trabajo-futuro)
+12. [Conclusiones y Trabajo Futuro](#Conclusiones-y-Trabajo-Futuro)
     
 ## Cuadro Comparativo
 
@@ -420,9 +420,11 @@ Hacer click en la imagen para ver el video
   </a>
 </p>
 
-## Conclusiones y trabajo futuro
+## Conclusiones y Trabajo Futuro
 
-En este laboratorio aprendimos a calibrar la herramienta (TCP), generar trayectorias complejas usando MoveJ, MoveL y MoveC, y a integrar señales de E/S digitales para activar rutinas del robot. Aunque hubo desafíos con tolerancias y rutas de herramientas, lograr que el robot dibujara correctamente las letras fue muy satisfactorio. Para trabajos futuros nos gustaría optimizar la fluidez de las trayectorias (reducir movimientos innecesarios), mejorar la robustez de la herramienta frente a variaciones pequeñas, y añadir funciones de detección de fallas o retorno seguro automático si alguna señal no es válida.
+La realización de esta práctica permitió validar la eficiencia de la programación offline mediante la API de RoboDK y Python, demostrando que la integración de funciones matemáticas y librerías de diseño facilita la creación de trayectorias complejas, como el corazón y el textocon nuestros nombres, que serían sumamente difíciles de programar de forma manual. Se comprendió que el éxito de la implementación física radica en la rigurosa calibración del Frame de trabajo y en la correcta gestión de las alturas de seguridad para evitar colisiones. Asimismo, se clarificó la importancia operativa de las dos configuraciones Home del Motoman MH6.
+
+En cuanto al análisis comparativo, se concluye que mientras el ecosistema de ABB (RobotStudio) ofrece una precisión técnica superior y un entorno de simulación nativo para sus equipos, RoboDK destaca por su versatilidad multimarca, permitiendo que un mismo script de Python controle tanto al Motoman MH6 como a otros manipuladores con mínimos ajustes. Esta flexibilidad es fundamental en entornos de investigación donde coexisten diferentes fabricantes. Como trabajo futuro, se propone la optimización dinámica de la velocidad según la curvatura de la trayectoria para mejorar la definición del trazo y la integración de sistemas de visión artificial para la detección automática de superficies, eliminando la necesidad de definir manualmente el plano de trabajo en el controlador.
 
 
 
